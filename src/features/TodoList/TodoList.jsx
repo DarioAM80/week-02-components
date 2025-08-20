@@ -1,12 +1,11 @@
 import TodoListItem from './TodoListItem';
 import { useState } from 'react';
 function TodoList(props) {
-  const { todoList, onCompleteTodo } = props;
+  const { todoList, onCompleteTodo, onUpdateToDo } = props;
 
   const filteredTodoList = todoList.filter((toDo) => {
     return !toDo.isCompleted;
   });
-  console.log(filteredTodoList);
   return (
     <>
       <ul>
@@ -18,6 +17,7 @@ function TodoList(props) {
               key={todo.id}
               todo={todo}
               onCompleteTodo={onCompleteTodo}
+              onUpdateToDo={onUpdateToDo}
             />
           ))
         )}
