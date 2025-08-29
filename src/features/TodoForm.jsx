@@ -4,13 +4,18 @@ import TextInputWithLabel from '../shared/TextInputWithLabel';
 function TodoForm(props) {
   const todoTitleInput = useRef('');
 
-  const { onAddTodo } = props;
+  const { onAddTodo, isSaving } = props;
 
   const [workingToDoTitle, setWorkingToDoTitle] = useState('');
 
   const handleAddTodo = (event) => {
     event.preventDefault();
-    onAddTodo(workingToDoTitle);
+    const newTodo = {
+      id: Date.now(),
+      title: workingToDoTitle,
+      isCompleted: false,
+    };
+    onAddTodo(newTodo);
     todoTitleInput.current.focus();
     setWorkingToDoTitle('');
   };
@@ -29,7 +34,9 @@ function TodoForm(props) {
         }}
       />
 
-      <button disabled={workingToDoTitle === ''}>Add Todo</button>
+      <button disabled={workingToDoTitle.trim() === ''}>
+        {isSaving ? 'Saving...' : 'Add Todo'}
+      </button>
     </form>
   );
 }
