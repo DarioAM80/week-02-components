@@ -6,7 +6,7 @@ function TodoList(props) {
   const filteredTodoList = todoList.filter((toDo) => {
     return !toDo.isCompleted;
   });
-  console.log(isLoading);
+
   return (
     <>
       {isLoading ? (

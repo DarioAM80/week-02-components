@@ -1,8 +1,9 @@
 import './App.css';
 import TodoList from './features/TodoList/TodoList';
 import TodoForm from './features/TodoForm';
+import TodosViewForm from './features/TodosViewForm';
 import React, { useEffect, useState } from 'react';
-import { sendRequest } from './util/util';
+import { sendRequest, encodeUrl } from './util/util';
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -10,7 +11,8 @@ function App() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [sortField, setSortField] = useState('createdTime');
-  const [sortDirection, setSortDirection] = useStated('desc');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [queryString, setQueryString] = useState('');
 
   const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
@@ -37,7 +39,7 @@ function App() {
 
     setIsSaving(true);
     const resptest = await sendRequest(
-      url,
+      encodeUrl(sortField, sortDirection, url, queryString),
       options,
       setErrorMessage,
       'Error adding new todo...'
@@ -85,13 +87,15 @@ function App() {
     };
     try {
       setIsSaving(true);
-      const resp = await fetch(url, options);
-      console.log(resp);
+      const resp = await fetch(
+        encodeUrl(sortField, sortDirection, url, queryString),
+        options
+      );
+
       if (!resp.ok) {
         throw new Error('Error saving todo...');
       }
     } catch (error) {
-      console.log(error.message);
       setErrorMessage(`${error.message}. Reverting todo...`);
       const revertedTodos = todoList.map((todo) => {
         if (todo.id == editedTodo.id) {
@@ -133,25 +137,26 @@ function App() {
       headers: { Authorization: token },
     };
     try {
-      const resp = await fetch(url, options);
+      const resp = await fetch(
+        encodeUrl(sortField, sortDirection, url, queryString),
+        options
+      );
       if (!resp.ok) {
         throw new Error(resp.message);
       }
       let response = await resp.json();
-      console.log(response);
+
       mapToDos(response.records);
     } catch (e) {
-      console.log(e.message);
       setErrorMessage(e.message);
     } finally {
-      console.log('in finally');
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [sortDirection, sortField, queryString]);
 
   /*useEffect(() => {
     console.log('saving changed');
@@ -179,6 +184,15 @@ function App() {
         onUpdateToDo={updateToDo}
         isLoading={isLoading}
       />
+      <hr />
+      <TodosViewForm
+        sortField={sortField}
+        setSortField={setSortField}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
+        queryString={queryString}
+        setQueryString={setQueryString}
+      />
       {errorMessage != '' ? (
         <div>
           <hr />
@@ -194,7 +208,6 @@ function App() {
       ) : (
         <React.Fragment></React.Fragment>
       )}
-      <button onClick={PromiseDemo}>Demo</button>
     </div>
   );
 }

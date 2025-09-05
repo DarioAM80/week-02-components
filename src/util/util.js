@@ -11,9 +11,12 @@ export const sendRequest = async (url, options, setErrorMessage) => {
   }
 };
 
-export const encodeUrl = (sortField, sortDirection) => {
+export const encodeUrl = (sortField, sortDirection, url, queryString) => {
+  let searchQuery = '';
+
   let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
-  const newURL = encodeURI(`${url}?${sortQuery}`);
-  console.log(newURL);
-  return newURL;
+  if (queryString != '') {
+    searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+  }
+  return encodeURI(`${url}?${sortQuery}${searchQuery}`);
 };
