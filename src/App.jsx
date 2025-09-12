@@ -2,8 +2,8 @@ import './App.css';
 import TodoList from './features/TodoList/TodoList';
 import TodoForm from './features/TodoForm';
 import TodosViewForm from './features/TodosViewForm';
-import React, { useEffect, useState } from 'react';
-import { sendRequest, encodeUrl } from './util/util';
+import React, { useEffect, useState, useCallback } from 'react';
+import { sendRequest } from './util/util';
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -16,6 +16,16 @@ function App() {
 
   const url = `https://api.airtable.com/v0/${import.meta.env.VITE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
   const token = `Bearer ${import.meta.env.VITE_PAT}`;
+
+  const encodeUrl = useCallback(() => {
+    let searchQuery = '';
+
+    let sortQuery = `sort[0][field]=${sortField}&sort[0][direction]=${sortDirection}`;
+    if (queryString != '') {
+      searchQuery = `&filterByFormula=SEARCH("${queryString}",+title)`;
+    }
+    return encodeURI(`${url}?${sortQuery}${searchQuery}`);
+  }, [sortField, sortDirection, url, queryString]);
 
   const addTodo = async (newTodo) => {
     const payload = {
@@ -39,7 +49,7 @@ function App() {
 
     setIsSaving(true);
     const resptest = await sendRequest(
-      encodeUrl(sortField, sortDirection, url, queryString),
+      encodeUrl(),
       options,
       setErrorMessage,
       'Error adding new todo...'
@@ -87,10 +97,7 @@ function App() {
     };
     try {
       setIsSaving(true);
-      const resp = await fetch(
-        encodeUrl(sortField, sortDirection, url, queryString),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
 
       if (!resp.ok) {
         throw new Error('Error saving todo...');
@@ -137,10 +144,7 @@ function App() {
       headers: { Authorization: token },
     };
     try {
-      const resp = await fetch(
-        encodeUrl(sortField, sortDirection, url, queryString),
-        options
-      );
+      const resp = await fetch(encodeUrl(), options);
       if (!resp.ok) {
         throw new Error(resp.message);
       }
