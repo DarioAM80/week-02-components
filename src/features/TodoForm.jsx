@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import TextInputWithLabel from '../shared/TextInputWithLabel';
+import styled from 'styled-components';
 
 function TodoForm(props) {
   const todoTitleInput = useRef('');
@@ -20,6 +21,10 @@ function TodoForm(props) {
     setWorkingToDoTitle('');
   };
 
+  const DisabledButton = styled.button`
+    font-style: ${(props) => (props.disabled ? 'italic' : 'none')};
+    font-weight: 800;
+  `;
   return (
     <form onSubmit={handleAddTodo}>
       {/* is the ID of the label's associated control element.*/}
@@ -34,9 +39,9 @@ function TodoForm(props) {
         }}
       />
 
-      <button disabled={workingToDoTitle.trim() === ''}>
+      <DisabledButton disabled={workingToDoTitle.trim() === ''}>
         {isSaving ? 'Saving...' : 'Add Todo'}
-      </button>
+      </DisabledButton>
     </form>
   );
 }

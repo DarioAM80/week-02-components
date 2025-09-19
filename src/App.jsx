@@ -4,6 +4,7 @@ import TodoForm from './features/TodoForm';
 import TodosViewForm from './features/TodosViewForm';
 import React, { useEffect, useState, useCallback } from 'react';
 import { sendRequest } from './util/util';
+import styles from './App.module.css';
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -179,8 +180,12 @@ function App() {
   };
 
   return (
-    <div>
-      <h1>My Todos</h1>
+    <div className={styles.center}>
+      <div id="title">
+        <img src="/list-svgrepo-com.png" width="30" height="40" />
+        <h1>My Todos</h1>
+      </div>
+
       <TodoForm onAddTodo={addTodo} isSaving={isSaving} />
       <TodoList
         todoList={todoList}
@@ -198,7 +203,7 @@ function App() {
         setQueryString={setQueryString}
       />
       {errorMessage != '' ? (
-        <div>
+        <div className={styles.errorBorder}>
           <hr />
           <p>{errorMessage}</p>
           <button

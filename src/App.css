@@ -1,0 +1,34 @@
+h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0.25rem;
+}
+
+div#root {
+  background-color: lightcyan;
+}
+
+input[type='text'] {
+  margin: 0 0 0 0.25rem;
+  border-style: solid;
+  border-color: black;
+}
+
+input[type='button'],
+button {
+  margin: 0 0.5rem;
+  border-radius: 15%;
+  border-color: black;
+  border-style: solid;
+}
+
+div#title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+select {
+  margin: 0.25rem;
+}

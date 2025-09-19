@@ -1,5 +1,6 @@
 import TodoListItem from './TodoListItem';
 import { useState } from 'react';
+import styles from './TodoList.module.css';
 function TodoList(props) {
   const { todoList, onCompleteTodo, onUpdateToDo, isLoading } = props;
 
@@ -12,7 +13,7 @@ function TodoList(props) {
       {isLoading ? (
         <p>Todo list loading...</p>
       ) : (
-        <ul>
+        <ul className={styles.noPadding}>
           {filteredTodoList.length === 0 ? (
             <p>Add to do above to get started</p>
           ) : (
